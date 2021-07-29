@@ -4,7 +4,7 @@ from bitwise.data.mail.parse import EmailParser
 from models import DOCUMENT_MODEL, ATTEMPT_MODEL
 
 
-cluster = MongoClient('mongodb+srv://admin:Basketball_0403@cluster0.mk64k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+cluster = MongoClient(# add auth info from json)
 db = cluster['bitwise']
 collection = db['problems']
 
