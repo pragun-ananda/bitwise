@@ -66,7 +66,9 @@ class EmailParser():
         if len(self._decoded_messages) == 0 or self._decoded_messages is None:
             raise Exception('Missing decoded messages. Check API connection') 
 
-        separator = '------------------------------------------------------------'
+        # Content separator in email format 
+        separator = '-' * 60
+        
         for message in self._decoded_messages:
             sep_idx = message.find(separator)
             problem = message[:sep_idx].strip()
