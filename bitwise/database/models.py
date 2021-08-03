@@ -1,5 +1,4 @@
 DOCUMENT_MODEL = {
-    '_id': 0,
     'source': "",
     'difficulty': "",
     'company': "",
