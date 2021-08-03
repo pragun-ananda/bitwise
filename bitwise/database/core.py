@@ -1,28 +1,30 @@
 import os
 import json
+from typing import Any
 import pymongo
 from pymongo import MongoClient
 from bitwise.data.mail.parse import EmailParser
 from models import DOCUMENT_MODEL, ATTEMPT_MODEL
 
-DATABASE = 'bitwise'
-COLLECTION = 'problems'
-AUTH_JSON = 'mongoauth.json'
+# Redefine constants to match your database and authorization criteria
+DATABASE_NAME = 'bitwise'
+COLLECTION_NAME = 'problems'
+AUTH_JSON_NAME = 'mongoauth.json'
 
 class DatabaseClient():
 
     def __init__(self):
-        if not os.path.exists(AUTH_JSON):
+        if not os.path.exists(AUTH_JSON_NAME):
             raise Exception('Authorization JSON not found. Check files.')
         self.connection = self.connect_to_db()
 
     def connect_to_db(self):
-        file = open(AUTH_JSON)
+        file = open(AUTH_JSON_NAME)
         info = json.load(file)
         access_key = list(info.keys())[0]
         cluster = MongoClient(access_key)
-        db = cluster[DATABASE]
-        collection = db[COLLECTION]
+        db = cluster[DATABASE_NAME]
+        collection = db[COLLECTION_NAME]
         return collection
 
     def create(self, 
@@ -33,16 +35,26 @@ class DatabaseClient():
                topic="",
                score=0,
                number=0,
-               ):
-        new_entry = DOCUMENT_MODEL
+               ) -> Any:
+        post = DOCUMENT_MODEL
         params = [source, difficulty, company, answer_format, topic, score, number]
         for param in params:
             key = str(param)
-            new_entry[key] = param
-        self.collection.insert_one(new_entry)
-               
-    def update(self,
-               )
+            post[key] = param
+        post_id = self.collection.insert_one(post).inserted_id
+        return post_id
+
+    def read(self):
+        '''TODO'''
+        return None
+
+    def update(self):
+        '''TODO'''
+        return None
+
+    def delete(self):
+        '''TODO'''
+        return None
 
 '''
 API methods:
