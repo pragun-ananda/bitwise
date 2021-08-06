@@ -14,7 +14,7 @@ DOCUMENT_MODEL = {
     ]
 }
 
-ATTEMPT_MODEL = {
+ATTEMPT_MODEL = {g
     'date': "",
     'code': "",
     'grading': {
