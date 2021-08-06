@@ -6,7 +6,8 @@ from pymongo import MongoClient
 from bitwise.data.mail.parse import EmailParser
 from models import DOCUMENT_MODEL, ATTEMPT_MODEL
 
-# Redefine constants to match your database and authorization criteria
+
+''' Define constants below to match your database and authorization information '''
 DATABASE_NAME = 'bitwise'
 COLLECTION_NAME = 'problems'
 AUTH_JSON_NAME = 'mongoauth.json'
@@ -27,6 +28,15 @@ class DatabaseClient():
         collection = db[COLLECTION_NAME]
         return collection
 
+    def build_doc_request(self, params):
+        request = DOCUMENT_MODEL
+        for param in params:
+            if len(param) == 0 or param == 0:
+                continue
+            key = str(param)
+            request[key] = param
+        return request
+
     def create(self, 
                source="",
                difficulty="",
@@ -36,45 +46,65 @@ class DatabaseClient():
                score=0,
                number=0,
                ) -> Any:
-        post = DOCUMENT_MODEL
-        params = [source, difficulty, company, answer_format, topic, score, number]
-        for param in params:
-            key = str(param)
-            post[key] = param
-        post_id = self.collection.insert_one(post).inserted_id
+               
+        params = [source, difficulty, company, 
+                  answer_format, topic, score, number]
+        request = self.build_doc_request(params)
+        post_id = self.collection.insert_one(request).inserted_id
         return post_id
 
-    def read(self):
-        '''TODO'''
-        return None
+    def read(self,
+             id=0,
+             source="",
+             difficulty="",
+             company="",
+             answer_format="",
+             topic="",
+             score=0,
+             number=0
+             ) -> Any:
 
-    def update(self):
-        '''TODO'''
-        return None
+        params = [source, id, difficulty, company, 
+                  answer_format, topic, score, number]
+        request = self.build_doc_request(params)
+        response = self.collection.find_one(request)
+        return response
 
-    def delete(self):
-        '''TODO'''
-        return None
+    def update(self,
+               id=0,
+               source="",
+               difficulty="",
+               company="",
+               answer_format="",
+               topic="",
+               score=0,
+               number=0
+               ) -> None:
 
-'''
-API methods:
+        document = self.read(id=id)
+        params = [source, id, difficulty, company, 
+                  answer_format, topic, score, number]
+        request = self.build_doc_request(params)
+        result = self.collection.update_one(document, request)
+        return result
 
-- insert_one({})
-- insert_many([{}, {}, ...])
-- find({}) -> returns iterable object
-- find_one({}) -> returns dictionary
-- delete_one({})
-- delete_many({})
-- update_one({}, {})    * param2 are update operators *
-- count_documents({})
-'''
+    def delete(self,
+               id=0,
+               source="",
+               difficulty="",
+               company="",
+               answer_format="",
+               topic="",
+               score=0,
+               number=0
+               ) -> None:
+        
+        params = [source, id, difficulty, company, 
+                  answer_format, topic, score, number]
+        request = self.build_doc_request(params)
+        result =  self.collection.delete_one(request)
+        return result
 
-'''
-TODO:
-    - Create an API to handle all CRUD operations
-    - Consider saving sensitive info somewhere (authenticate.json)
 
-'''
-
-test_model = DOCUMENT_MODEL
-collection.insert_one(test_model)
+# test_model = DOCUMENT_MODEL
+# collection.insert_one(test_model)
