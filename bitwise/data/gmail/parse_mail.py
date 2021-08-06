@@ -3,14 +3,13 @@ from collections import defaultdict
 from typing import List, Any
 from bitwise.backend.mail.connection import create_service
 
-
+'''Modify definitions specific to you'''
 CLIENT_FILE = 'clientauth.json'
 API_NAME = 'gmail'
 API_VERSION = 'v1'
 SCOPES = ['https://mail.google.com/']
 ADDRESS = 'founders@dailycodingproblem.com'
 PROBLEM_AMOUNT = 10
-
 
 class EmailParser():
 
@@ -39,7 +38,8 @@ class EmailParser():
             raise Exception('API connection not established') 
         
         message_id_dict = self._api.users().messages().list(
-            userId='me', maxResults=PROBLEM_AMOUNT, q='from:' + ADDRESS).execute()
+            userId='me', maxResults=PROBLEM_AMOUNT, 
+            q='from:' + ADDRESS).execute()
 
         for message in message_id_dict['messages']:
             self._message_ids.append(message['id'])
@@ -49,7 +49,8 @@ class EmailParser():
             raise Exception('API connection not established')
 
         for id in self._message_ids:
-            message = self._api.users().messages().get(userId=self._userId, id=str(id)).execute()
+            message = self._api.users().messages().get(userId=self._userId,
+                                                       id=str(id)).execute()
             self._encoded_messages.append(message)
 
     def decode_messages(self) -> None:
@@ -83,8 +84,6 @@ class EmailParser():
 '''
 TODO:
     - implement a method to parse subject info (problem number, company, difficulty)
-    - choose how data will be stored -> what's the best way for MongoDB? 
-    - connect to DB and write data to MongoDB 
 '''
 
 def main():
